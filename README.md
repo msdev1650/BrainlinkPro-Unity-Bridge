@@ -1,155 +1,54 @@
-## BrainLink Pro is supported.
-![Pro_girl](https://github.com/user-attachments/assets/5d5a1047-63f5-4135-87d2-fa34a8e66f19)
-## BrainLink Lite is supported.
-![Lite20240909-110821](https://github.com/user-attachments/assets/1770eaf6-7683-4ada-b8ea-bc322457f6df)
-![data_stream](https://github.com/user-attachments/assets/7479371b-65a9-4000-9aa0-31282bdc5934)
-# BrainLinkParser-Python（EEG data stream, Windows, MacOS, TouchDesigner）
+# BrainLink Pro Unity3D Integration
 
-## Python Version
+BrainLink Pro Unity3D Integration is a project that enhances the [BrainLinkParser-Python](https://github.com/Macrotellect/BrainLinkParser-Python) to facilitate low-latency integration of a BrainLink Pro device with Unity3D.
 
-- Python 3.11. You need to have a brainwave detection device(BrainLink Lite or BrainLink Pro) to use the following code.
-- Buy from our website: https://o.macrotellect.com/index.html#v1
-- BrainLink Pro 259 USA$
+![BrainLink Pro Integration](https://github.com/user-attachments/assets/dcba5fa0-5556-47a9-b2bb-5eee024596c6)
 
-## SDK
+## Installation
 
-- Windows: BrainLinkParser.pyd
-- Macos: BrainLinkParser.so
+### 1. Python Setup
+- Install [Python 3.11](https://www.python.org/downloads/).
+Note: Version must match exactly.
 
-## Import
+### 2. Required Python Libraries
+Install the following libraries using pip:
 
-- from BrainLinkParser import BrainLinkParser
-
-## Interface Parameters and Return Values
-
-- **BrainLinkParser(eeg_callback(BrainLinkData)=None, eeg_extend_callback(BrainLinkExtendData)=None, gyro_callback(int, int, int)=None, rr_callback(int, int, int)=None, raw_callback(int)=None)** Constructor
-
-    | Parameters     | Description     |
-    | ------- | ------- |
-    | eeg_callback   | EEG Data Callback Function, parameter is an object of BrainLinkData, default is None. |
-    | eeg_extend_callback   | EEG Extended Data Callback Function, parameter is an object of BrainLinkExtendData, with a default value of None. |
-    | gyro_callback   | Gyroscope Data Callback Function, parameters are integer values for x, y, z, with a default value of None. |
-    | rr_callback   | Heartbeat RR Data Callback Function, parameters are integer values for rr1, rr2, rr3, with a default value of None. |
-    | raw_callback   | Raw Data Callback Function, parameter is an integer type for 'raw', with a default value of None. |
-
-- **parse(byteData)** Parse Data
-
-    | Parameters     | Description     |
-    | ------- | ------- |
-    | byteData   | Parameter is of type 'bytes' |
-
-## BrainLinkData Explanation
-
-- signal
-
-- attention
-
-- meditation
-
-- delta
-
-- theta
-
-- lowAlpha
-
-- highAlpha
-
-- lowBeta
-
-- highBeta
-
-- lowGamma
-
-- highGamma
-
-## BrainLinkExtendData Explanation
-
-- ap
-
-- battery
-
-- version
-
-- gnaw
-
-- temperature
-
-- heart
-
-## Sample code provided for development reference
-
-```
-import time
-import serial
-from BrainLinkParser import BrainLinkParser
-
-def onRaw(raw):
-    # print("raw = " + str(raw))
-    return
-
-def onEEG(data):
-    print("attention = " + str(data.attention) +
-          " meditation = " + str(data.meditation) +
-          " delta = " + str(data.delta) +
-          " theta = " + str(data.theta) +
-          " lowAlpha = " + str(data.lowAlpha) +
-          " highAlpha = " + str(data.highAlpha) +
-          " lowBeta = " + str(data.lowBeta) +
-          " highBeta = " + str(data.highBeta) +
-          " lowGamma = " + str(data.lowGamma) +
-          " highGamma = " + str(data.highGamma))
-    return
-
-def onExtendEEG(data):
-    print("ap = " + str(data.ap) +
-          " battery = " + str(data.battery) +
-          " version = " + str(data.version) +
-          " gnaw = " + str(data.gnaw) +
-          " temperature = " + str(data.temperature) +
-          " heart = " + str(data.heart))
-    return
-
-def onGyro(x, y, z):
-    print("x = " + str(x) + " y = " + str(y) + " z = " + str(z))
-    return
-
-def onRR(rr1, rr2, rr3):
-    print("rr1 = " + str(rr1) + " rr2 = " + str(rr2) + " rr3 = " + str(rr3))
-    return
-
-parser = BrainLinkParser(onEEG, onExtendEEG, onGyro, onRR, onRaw)
-
-ser = serial.Serial('/dev/cu.BrainLink_Pro', 115200)
-try:
-    while True:
-
-        data = ser.read(512)
-
-        parser.parse(data)
-
-        time.sleep(0.1)
-
-finally:
-    ser.close()
+```bash
+pip install tkinter pyserial fastapi uvicorn
 ```
 
+### 3. BrainLinkParser
+Ensure `BrainLinkParser.py` is located in the same directory as your script or within your Python path.
 
-# Use in TouchDesigner
+### 4. Running the Python Script
+For Windows 11 users:
+1. Open PowerShell in the script's directory.
+2. Execute the following command:
 
-- Macos：Place the BrainLinkParser.so file into the directory `/Applications/TouchDesigner.app/Contents/MacOS/Lib`, so that the module can be used directly within TouchDesigner
-- Windows system: Place the BrainLinkParser.pyd file into the directory `C:\Program Files\Derivative\TouchDesigner\bin\Lib` to use it in TouchDesigner
+   ```bash
+   python .\BrainLinkMonitor.py
+   ```
 
-![TD](https://github.com/Macrotellect/BrainLinkParser-Python/blob/main/TD.png)
+### 5. Unity3D Integration
+1. Import the provided C# script from `UnityClient/EEGDataReceiver.cs` into your Unity project.
+2. Install the necessary dependencies, particularly:
+   - Newtonsoft.Json
+3. Create a TextMeshPro text element in your scene to display the EEG values.
 
-# FAQ
+## Usage
+1. Start the Python script to begin receiving data from the BrainLink Pro device.
+2. In your Unity project, use the `EEGDataReceiver` script to process and display the incoming EEG data.
 
-## 1.Don't know which COM port to choose for connection in Windows system?
+## License
 
-### video tutorial in this url https://youtu.be/ENkKVI4Av3k
-After the computer's Bluetooth searches for the BrainLink Bluetooth device, pair it. The Bluetooth interface of the computer may display two BrainLink Pro device names. When pairing, please select the one with the headphone pattern in front of the device name.The computer will generate two virtual Bluetooth COM ports. When opening TouchDesigner, you don't know which COM port to choose for connection?
+This project is a fork of [BrainLinkParser-Python](https://github.com/Macrotellect/BrainLinkParser-Python), 
+which does not specify a license. 
 
-The correct answer is to select the output COM port for connection. So, how can you distinguish which COM port is for input and which is for output? You can go to the computer's Bluetooth settings interface, select more Bluetooth options, and then click on the COM port to see which one is the output port.
+The additional code and modifications made in this fork are available for use under 
+the MIT License. 
 
-After the computer's Bluetooth locates the BrainLink Bluetooth device, proceed with the pairing. The computer will create two virtual Bluetooth COM ports. When you open TouchDesigner, you might be unsure which COM port to select for the connection.
+If you're the original author of BrainLinkParser-Python and have any concerns, 
+please contact us.
 
-The correct approach is to choose the output COM port for the connection. How can you identify which COM port is for input and which is for output? Navigate to your computer's Bluetooth settings, select additional Bluetooth options, and then click on the COM ports to see which one is designated as the output port.
+## Acknowledgments
+- Original BrainLinkParser by [Macrotellect](https://github.com/Macrotellect)
